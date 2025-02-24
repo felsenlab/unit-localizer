@@ -3,10 +3,10 @@ This is a Python package for estimating the location of cells recorded with Neur
 
 # Installation
 Clone the repository:<br />
-`git clone https://github.com/jbhunt/nptracer.git`<br />
+`git clone https://github.com/felsenlab/unit-localizer.git`<br />
 <br />
 Navigate to the root directory of the project:<br />
-`cd ./nptracer`<br />
+`cd ./unit-localizer`<br />
 <br />
 Execute the setup script with pip:<br />
 `pip install .`
@@ -14,8 +14,8 @@ Execute the setup script with pip:<br />
 # Basic usage
 ## Downloading the Allen Mouse Common Coordinate Framework (CCF)
 ```Python
-import nptracer as npt
-npt.downloadCCFDataFromOSF()
+from unit_localizer import downloadCCFDataFromOSF
+downloadCCFDataFromOSF()
 ```
 The function `downloadCCFDataFromOSF` downloads the CCF to your local machine.
 Alternatively, you can download the CCF from a different source using the
@@ -23,10 +23,10 @@ Alternatively, you can download the CCF from a different source using the
 
 ## Estimating unit location with the Neuropixels trajectory explorer
 ```Python
-import nptracer as npt
+from unit_localizer import localizeUnitsWithTrajectoryExplorerFile
 kilosortOutputFolder = 'path/to/kilosort/output'
 trajectoryExplorerFile = 'path/to/trajectory/explorere/file'
-labels, points, transformed = npt.localizeUnitsWithTrajectoryExplorerFile(
+labels, points, transformed = localizeUnitsWithTrajectoryExplorerFile(
     kilosortOutputFolder=kilosortOutputFolder
     trajectoryExplorerFile=trajectoryExplorerFile
 )
@@ -38,13 +38,13 @@ as `points` but indicates the location of each unit in stereotaxic coordinates
 in reference to bregma.<br />
 ## Estimating unit location with sterotaxic coordinates
 ```Python
-import nptracer as npt
+from unit_localizer import localizeUnitsWithInsertionParameters
 kilosortOutputFolder = 'path/to/kilosort/output'
 insertionPoint = np.array([-3.9, 2.5, 0.4]) # Insertion point in sterotaxic coordinates (AP, ML, DV) in mm
 insertionDepth = 3.6 # Depth of insertion along the trajectory of the insertion (in mm)
 insertionAngle = 6 # Angle of insertion (in degrees)
 skullThickness = 0.3 # Assumed thickness of the skull (in mm)
-labels, points, transformed = npt.localizeUnitsWithInsertionParameters(
+labels, points, transformed = localizeUnitsWithInsertionParameters(
     kilosortOutputFolder=kilosortOutputFolder,
     insertionPoint=insertionPoint,
     insertionDepth=insertionDepth,
@@ -53,13 +53,13 @@ labels, points, transformed = npt.localizeUnitsWithInsertionParameters(
 )
 ```
 ## Utility functions
+The `estimateSpikeDepths` function computes the distance of each spike from the tip of the Neurpixels
+probe. Please note that this function assumes all active channels are clustered
+at the tip of the electrode.<br />
 ```Python
-import nptracer as npt
+from unit_localizer import estimateSpikeDepths
 kilosortOutputFolder = 'path/to/kilosort/output'
-templateDepths, spikeDepths = npt.estimateSpikeDepths(
+templateDepths, spikeDepths = estimateSpikeDepths(
     kilosortOutputFolder=kilosortOutputFolder
 )
 ```
-This function computes the distance of each spike from the tip of the Neurpixels
-probe. Please note that this function assumes all active channels are clustered
-at the tip of the electrode.<br />
